@@ -12,8 +12,11 @@ from lib.sensors import Sensor
 class Car:    
     '''A car.'''  
     _shape = [(-10,-15),(-10,15), (10,15), (10,-15)]
-    
-    def __init__(self, track, brain, color="red"):   
+
+    def __lt__(self, other):
+        return self.reward > other.reward
+
+    def __init__(self, track, brain, level, color="red"):
         self.canvas = track.canvas 
         self.canvas_shape_id = None    
         self.track = track
@@ -27,6 +30,25 @@ class Car:
         self.isalive = True
         self.sensors = []
         self.brain.initialize(self)
+        self.reward = 0.0
+        self.level = level
+        self.middlePoints = [
+            # level 1
+            [(100,535), (100,100),(700,100), (700,500), (200, 500)],
+            # level 2
+            [(72,503), (82,98), (662,86), (653,237), (368,233), (358,336), (643,343), (636,464), (203,488), (205,191)],
+            # level 3
+            [(461,127), (286,301), (461,408), (723,143), (424,18), (84,295), (486,562)],
+            # level 4
+            [(24,372), (129,252), (220,165), (272,148), (321,148), (386,195), (429,270), (446,337), (481,391), (532,405), (604,377), (646,337), (679,279), (747,215)],
+            # Level 5
+            [(166,447), (136,387), (136,330), (148,266), (180,226), (223,196), (285,171), (352,141), (436,136), (510,144), (561,178), (602,222), (623,278), (626,325), (620,377), (586,415), (526,451), (446,467), (360,477)],
+            # Level 6
+            [(152,448), (144,295), (166,177), (236,125), (342,97), (505,89), (629,97), (704,193), (700,337), (692,420), (629,500), (548,549), (415,550), (296,551), (253,485), (252,414), (268,338), (296,250), (370,217), (428,202), (520,202), (577,220), (605,269), (587,341), (548,398), (486,421), (384,405)]
+        ]
+        self.nextMiddlePoint = self.middlePoints[self.level-1][0]
+        self.nextMiddlePointIndex = 0
+
 
 
     def points(self):        
@@ -45,26 +67,33 @@ class Car:
         '''Update the car status (brain, sensors, position, speed, direction, ...).'''
         if self.isalive:            
             self.brain.update()
+            self.reward = self.reward - 0.0003
 
-            # update speed and direction
             self.speed = self.speed + self.acceleration
             self.direction = (self.direction + self.steeringwheel) % 360 
 
-            # update position
             relativeposition = Point(0, self.speed).rotate(self.direction)
             self.position = self.position.move(relativeposition.x, -relativeposition.y)
-            
-            # update sensor  
+
             for s in self.sensors:
                 s.update()
+
+            self.distanceToCheckpoint = sqrt((self.position.x-self.nextMiddlePoint[0])*(self.position.x-self.nextMiddlePoint[0]) +
+                    (self.position.y-self.nextMiddlePoint[1])*(self.position.y-self.nextMiddlePoint[1]))
+            if self.distanceToCheckpoint  < 100 and self.nextMiddlePointIndex < len(self.middlePoints[self.level -1]):
+                self.nextMiddlePoint = self.middlePoints[self.level-1][self.nextMiddlePointIndex]
+                self.nextMiddlePointIndex = self.nextMiddlePointIndex + 1
+                self.reward = self.reward + 0.3
 
             # check position
             if any([not self.track.intrack(*p) for p in self.points()]):        
                 #print("!!!!!!!!!!!!!OUT OF TRACK!!!!!!!!!!!!!")
+                self.reward = self.reward - 1
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="black")
             elif self.track.ingoal(*self.position):
                 #print("!!!!!!!!!!!!! WON !!!!!!!!!!!!!")
+                self.reward = self.reward + 1
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="blue")
             

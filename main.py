@@ -7,29 +7,28 @@
 import tkinter
 from lib.tracks import Track
 from lib.car import Car
-import brains
-
-
+from brains import UglyBrain
+from random import uniform
+import time
+from agent import Agent
+from CarController import CarController
 # create canvas for drawing
-canvas = tkinter.Canvas(width=800, height=600, background="yellow green")
-canvas.pack()
 
-# load track
-track = Track.level(canvas, draw_midline=True, level_number=1)
-track.draw()
 
 # create car
-car = Car(track, brains.UglyBrain(), color="blue")
 
-def update():
-    '''Update the car and redraw it.'''
-    car.update()
-    car.draw()
-
-    # increase value to slow down total speed of simulation
-    canvas.after(60, update) 
+carController = CarController()
+carController.simulateGens()
 
 
-# start update & mainloop of window
-update()
-tkinter.mainloop()
+
+
+
+
+
+
+
+
+
+
+
