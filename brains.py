@@ -74,7 +74,8 @@ class RandomBrain(Brain):
 			self.car.accelerate(2)
 		pass
 
-class UglyBrain(Brain):
+
+class ParameterEvolutionBrain(Brain):
 
 	def __init__(self, agent):
 		self.agent = agent

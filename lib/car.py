@@ -67,7 +67,7 @@ class Car:
         '''Update the car status (brain, sensors, position, speed, direction, ...).'''
         if self.isalive:            
             self.brain.update()
-            self.reward = self.reward - 0.0003
+            self.reward = self.reward - 0.01
 
             self.speed = self.speed + self.acceleration
             self.direction = (self.direction + self.steeringwheel) % 360 

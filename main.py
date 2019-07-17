@@ -7,7 +7,7 @@
 import tkinter
 from lib.tracks import Track
 from lib.car import Car
-from brains import UglyBrain
+from brains import ParameterEvolutionBrain
 from random import uniform
 import time
 from agent import Agent
