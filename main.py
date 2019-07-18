@@ -4,21 +4,17 @@
 # Execute this script to start the simulation:
 #    py main.py
 #
-import tkinter
-from lib.tracks import Track
-from lib.car import Car
-from brains import ParameterEvolutionBrain
-from random import uniform
-import time
-from agent import Agent
-from CarController import CarController
+
+from car_controller import ParameterEvolutionCarController
+from car_controller import DeepQLearningCarController
+
 # create canvas for drawing
 
 
 # create car
 
-carController = CarController()
-carController.simulateGens()
+carController = DeepQLearningCarController()
+carController.run()
 
 
 

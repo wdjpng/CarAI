@@ -6,7 +6,7 @@
 from lib.car import Brain
 from lib.sensors import Sensor, GoalSensor
 import random
-from agent import Agent
+
 class InteractiveBrain(Brain):
 	"""Brain that allows to control a car with the arrow keys."""
 	def setup(self):
@@ -130,3 +130,31 @@ class ParameterEvolutionBrain(Brain):
 			self.car.accelerate(2)
 
 		pass
+
+class DeepQLearningBrain(Brain):
+	"""Brain that allows to control a car with the arrow keys."""
+
+	def up(self):
+		self.car.accelerate(1)
+
+	def right(self):
+		self.car.turn(15)
+
+	def left(self):
+		self.car.turn(-15)
+
+	def setup(self):
+		self.action = 0
+
+		self.front_left_sensor = Sensor(self.car, angle=-45, x=-6, y=15)
+		self.front_center_sensor = Sensor(self.car, angle=0, x=0, y=15)
+		self.front_right_sensor = Sensor(self.car, angle=45, x=6, y=15)
+
+	def update(self):
+		if self.action == 0:
+			self.up()
+		elif self.action == 1:
+			self.left()
+		elif self.action == 2:
+			self.right()
+

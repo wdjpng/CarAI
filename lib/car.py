@@ -14,7 +14,7 @@ class Car:
     _shape = [(-10,-15),(-10,15), (10,15), (10,-15)]
 
     def __lt__(self, other):
-        return self.reward > other.reward
+        return self.totalReward > other.reward
 
     def __init__(self, track, brain, level, color="red"):
         self.canvas = track.canvas 
@@ -30,6 +30,7 @@ class Car:
         self.isalive = True
         self.sensors = []
         self.brain.initialize(self)
+        self.totalReward = 0.0
         self.reward = 0.0
         self.level = level
         self.middlePoints = [
@@ -64,10 +65,12 @@ class Car:
         self.steeringwheel = max(-90, min(90, units))
 
     def update(self):
+        self.reward = 0
         '''Update the car status (brain, sensors, position, speed, direction, ...).'''
         if self.isalive:            
             self.brain.update()
-            self.reward = self.reward - 0.01
+            self.totalReward = self.totalReward - 0.01
+            self.reward -= 0.01
 
             self.speed = self.speed + self.acceleration
             self.direction = (self.direction + self.steeringwheel) % 360 
@@ -83,16 +86,19 @@ class Car:
             if self.distanceToCheckpoint  < 100 and self.nextMiddlePointIndex < len(self.middlePoints[self.level -1]):
                 self.nextMiddlePoint = self.middlePoints[self.level-1][self.nextMiddlePointIndex]
                 self.nextMiddlePointIndex = self.nextMiddlePointIndex + 1
+                self.totalReward = self.totalReward + 0.3
                 self.reward = self.reward + 0.3
 
             # check position
             if any([not self.track.intrack(*p) for p in self.points()]):        
                 #print("!!!!!!!!!!!!!OUT OF TRACK!!!!!!!!!!!!!")
+                self.totalReward = self.totalReward - 1
                 self.reward = self.reward - 1
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="black")
             elif self.track.ingoal(*self.position):
                 #print("!!!!!!!!!!!!! WON !!!!!!!!!!!!!")
+                self.totalReward = self.totalReward + 1
                 self.reward = self.reward + 1
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="blue")
@@ -109,6 +115,7 @@ class Car:
         
         for s in self.sensors:
             s.draw()
+
 
 ###############################################################################
 # BRAIN
