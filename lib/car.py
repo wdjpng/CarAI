@@ -116,6 +116,11 @@ class Car:
         for s in self.sensors:
             s.draw()
 
+    def removeFromCanvas(self):
+        self.canvas.delete(self.canvas_shape_id)
+
+        for sensor in self.sensors:
+            sensor.removeFromCanvas()
 
 ###############################################################################
 # BRAIN

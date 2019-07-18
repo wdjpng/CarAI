@@ -59,6 +59,9 @@ class Sensor:
             self.car.canvas.coords(self.sensor_line_id, *self.position, *self.obstacle)                
             self.car.canvas.itemconfig(self.sensor_line_id, fill="blue" if self.is_obstacle_goal else "orange")
 
+    def removeFromCanvas(self):
+        self.car.canvas.delete(self.sensor_line_id)
+
     def measure(self, shapes, frompoint, topoint):
         '''Measure the distance from point frompoint to the first intersection of line (frompoint,topoint) with shapes.'''
         nearest_point = (None, None)
