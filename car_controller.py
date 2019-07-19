@@ -34,8 +34,6 @@ class DeepQLearningCarController:
         self.gamma = 0.9  # since it may take several moves to goal, making gamma high
         self.epsilon = 1
 
-        self.tkRoot = Tk()
-
         self.currentEpisode = 1
 
     def initNeuralNetwork(self):

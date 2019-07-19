@@ -12,7 +12,6 @@ from car_controller import DeepQLearningCarController
 
 
 # create car
-
 carController = DeepQLearningCarController()
 carController.run()
 
