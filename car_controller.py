@@ -80,8 +80,11 @@ class DeepQLearningCarController:
         DeepQLearningCarController.model.fit(self.state.reshape(1, 3), y, batch_size=1, nb_epoch=1, verbose=1)
         self.state = new_state
         if not self.car.isalive:
+            self.currentEpisode+=1
             self.car.removeFromCanvas()
             self.car = Car(self.track, DeepQLearningBrain(), self.level)
+            if self.epsilon > 0.1:
+                self.epsilon -= (1 / self.epochs)
 
 
         self.canvas.after(1, self.update)
@@ -101,15 +104,9 @@ class DeepQLearningCarController:
     def run(self):
 
         self.initNeuralNetwork()
-        for i in range(self.epochs):
-            self.currentEpisode = i
 
-            self.update()
-            tkinter.mainloop()
-
-
-            if self.epsilon > 0.1:
-                self.epsilon -= (1 / self.epochs)
+        self.update()
+        tkinter.mainloop()
 
 
 class ParameterEvolutionCarController:
