@@ -97,7 +97,25 @@ class DeepQLearningCarController:
         self.car.update()
         self.car.draw()
 
-        return np.array([1.0/self.car.brain.front_center_sensor.distance, 1.0/self.car.brain.front_left_sensor.distance, 1.0/self.car.brain.front_right_sensor.distance])
+        frontCenterNormalized = 0
+        frontLeftNormalized = 0
+        frontRightNormalized = 0
+        try:
+            frontCenterNormalized = 1.0/self.car.brain.front_center_sensor.distance
+        except:
+            frontCenterNormalized = 1
+
+        try:
+            frontLeftNormalized = 1.0 / self.car.brain.front_left_sensor.distance
+        except:
+            frontLeftNormalized = 1
+
+        try:
+            frontRightNormalized = 1.0/self.car.brain.front_right_sensor.distance
+        except:
+            frontRightNormalized = 1
+
+        return np.array([frontCenterNormalized, frontLeftNormalized, frontRightNormalized])
 
     def run(self):
 
