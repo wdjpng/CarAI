@@ -69,8 +69,8 @@ class Car:
         '''Update the car status (brain, sensors, position, speed, direction, ...).'''
         if self.isalive:            
             self.brain.update()
-            self.totalReward = self.totalReward - 0.01
-            self.reward -= 0.01
+            self.totalReward = self.totalReward - 0.1
+            self.reward -= 0.1
 
             self.speed = self.speed + self.acceleration
             self.direction = (self.direction + self.steeringwheel) % 360 
@@ -86,20 +86,20 @@ class Car:
             if self.distanceToCheckpoint  < 100 and self.nextMiddlePointIndex < len(self.middlePoints[self.level -1]):
                 self.nextMiddlePoint = self.middlePoints[self.level-1][self.nextMiddlePointIndex]
                 self.nextMiddlePointIndex = self.nextMiddlePointIndex + 1
-                self.totalReward = self.totalReward + 0.3
-                self.reward = self.reward + 0.3
+                self.totalReward = self.totalReward + 1
+                self.reward = self.reward + 1
 
             # check position
             if any([not self.track.intrack(*p) for p in self.points()]):        
                 #print("!!!!!!!!!!!!!OUT OF TRACK!!!!!!!!!!!!!")
-                self.totalReward = self.totalReward - 1
-                self.reward = self.reward - 1
+                self.totalReward = self.totalReward - 10
+                self.reward = self.reward - 10
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="black")
             elif self.track.ingoal(*self.position):
                 #print("!!!!!!!!!!!!! WON !!!!!!!!!!!!!")
-                self.totalReward = self.totalReward + 1
-                self.reward = self.reward + 1
+                self.totalReward = self.totalReward + 10
+                self.reward = self.reward + 10
                 self.isalive = False
                 self.canvas.itemconfig(self.canvas_shape_id, fill="blue")
             
